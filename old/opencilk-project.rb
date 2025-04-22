@@ -5,7 +5,7 @@ class OpencilkProject < Formula
   desc "OpenCilk compiler.  Forked from llvm/llvm-project and based on Tapir/LLVM."
   homepage "https://www.opencilk.org/"
   url "https://github.com/OpenCilk/opencilk-project/archive/refs/heads/release/19.x.zip"
-  sha256 "bdc4e8a1ca54c7a5bc59081ef6ec426809f292ca7273d66b2689a3ca90d5ab63"
+  sha256 "99f3156c1c64f21788e7836bcb2b7a81dc7ec4e9601c219109f785994d440124"
   version "19.1.7"
   # url "https://github.com/OpenCilk/opencilk-project/archive/refs/tags/opencilk/v2.1.tar.gz"
   # sha256 "de35ac6a64b86f3fb544cfcf3e76d4c7dda95f8c624c7c0ff2001fd2a6ed32ce"
@@ -76,7 +76,6 @@ class OpencilkProject < Formula
     projects = %w[
       clang
       clang-tools-extra
-      lld
       mlir
       polly
     ]
@@ -88,25 +87,25 @@ class OpencilkProject < Formula
       pstl
     ]
 
-    unless versioned_formula?
-      projects << "lldb"
+    # unless versioned_formula?
+    #   projects << "lldb"
 
-      if OS.mac?
-        runtimes << "openmp"
-      else
-        projects << "openmp"
-      end
-    end
+    #   if OS.mac?
+    #     runtimes << "openmp"
+    #   else
+    #     projects << "openmp"
+    #   end
+    # end
 
     python_versions = Formula.names
                              .select { |name| name.start_with? "python@" }
                              .map { |py| py.delete_prefix("python@") }
-    site_packages = Language::Python.site_packages(python3).delete_prefix("lib/")
+    # site_packages = Language::Python.site_packages(python3).delete_prefix("lib/")
 
-    # Work around build failure (maybe from CMake 4 update) by using environment
-    # variable for https://cmake.org/cmake/help/latest/variable/CMAKE_OSX_SYSROOT.html
-    # TODO: Consider if this should be handled in superenv as impacts other formulae
-    ENV["SDKROOT"] = MacOS.sdk_for_formula(self).path if OS.mac? && MacOS.sdk_root_needed?
+    # # Work around build failure (maybe from CMake 4 update) by using environment
+    # # variable for https://cmake.org/cmake/help/latest/variable/CMAKE_OSX_SYSROOT.html
+    # # TODO: Consider if this should be handled in superenv as impacts other formulae
+    # ENV["SDKROOT"] = MacOS.sdk_for_formula(self).path if OS.mac? && MacOS.sdk_root_needed?
 
     # Apple's libstdc++ is too old to build LLVM
     ENV.libcxx if ENV.compiler == :clang
@@ -139,10 +138,9 @@ class OpencilkProject < Formula
       -DLLVM_USE_RELATIVE_PATHS_IN_FILES=ON
       -DLLVM_SOURCE_PREFIX=.
       -DLLDB_USE_SYSTEM_DEBUGSERVER=ON
-      -DLLDB_ENABLE_PYTHON=ON
+      -DLLDB_ENABLE_PYTHON=OFF
       -DLLDB_ENABLE_LUA=OFF
       -DLLDB_ENABLE_LZMA=ON
-      -DLLDB_PYTHON_RELATIVE_PATH=libexec/#{site_packages}
       -DLIBOMP_INSTALL_ALIASES=OFF
       -DLIBCXX_INSTALL_MODULES=ON
       -DCLANG_PYTHON_BINDINGS_VERSIONS=#{python_versions.join(";")}
@@ -246,8 +244,8 @@ class OpencilkProject < Formula
     args << "-DRUNTIMES_CMAKE_ARGS=#{runtimes_cmake_args.join(";")}" if runtimes_cmake_args.present?
     args << "-DBUILTINS_CMAKE_ARGS=#{builtins_cmake_args.join(";")}" if builtins_cmake_args.present?
 
-    opencilkpath = buildpath/"opencilk"
-    mkdir opencilkpath/"build" do
+    llvmpath = buildpath/"llvm"
+    mkdir llvmpath/"build" do
       system "cmake", "-G", "Ninja", "..", *(std_cmake_args + args)
       system "cmake", "--build", "."
       system "cmake", "--build", ".", "--target", "install"
@@ -315,6 +313,8 @@ class OpencilkProject < Formula
       "/"
     end
 
+    cheetah = Formula["cheetah"]
+
     {
       darwin: kernel_version,
       macosx: macos_version,
@@ -323,6 +323,7 @@ class OpencilkProject < Formula
         config_file = "#{target_arch}-apple-#{system}#{version}.cfg"
         (clang_config_file_dir/config_file).atomic_write <<~CONFIG
           -isysroot #{sysroot}
+          --opencilk-resource-dir=#{cheetah.opt_prefix}
         CONFIG
       end
     end
