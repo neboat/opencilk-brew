@@ -1,9 +1,9 @@
 class Opencilk < Formula
   desc "Task-parallel programming platform"
   homepage "https://www.opencilk.org/"
-  url "https://github.com/OpenCilk/opencilk-project/archive/refs/heads/release/19.x.zip"
+  url "https://github.com/OpenCilk/opencilk-project/archive/refs/tags/opencilk/v3.0.zip"
   version "19.1.7"
-  sha256 "99f3156c1c64f21788e7836bcb2b7a81dc7ec4e9601c219109f785994d440124"
+  sha256 "4a2c5e98040c963f0a5bc55a1e113d60d28fc824945c512f643ad6b08889a3da"
   # The OpenCilk Project is under the MIT License and the Apache License v2.0 with LLVM Exceptions
   license all_of: [
     "MIT",
@@ -38,13 +38,13 @@ class Opencilk < Formula
 
   # [OpenCilk] Add cheetah and cilktools as additional dependencies
   resource "cheetah" do
-    url "https://github.com/OpenCilk/cheetah/archive/refs/heads/dev.zip"
-    sha256 "03d326244314ad5089722dac5c38377d0c27e86c2aad5a78f8ad5203e5db7611"
+    url "https://github.com/OpenCilk/cheetah/archive/refs/tags/opencilk/v3.0.zip"
+    sha256 "960053cf82a6d9c732a48384e86f3ddad94fea26e96a665cc88b2e0677c6eeb0"
   end
 
   resource "cilktools" do
-    url "https://github.com/OpenCilk/productivity-tools/archive/refs/heads/dev.zip"
-    sha256 "add0e8638d914704831ff2846cfa1d3d3275cf52d8b9dc05976cf80691808f8d"
+    url "https://github.com/OpenCilk/productivity-tools/archive/refs/tags/opencilk/v3.0.zip"
+    sha256 "7522d450fd04cb8c4f1077eec20be9cd5f7d95845dac297eea113f8d93aad7a8"
   end
 
   # Backport relative `CLANG_CONFIG_FILE_SYSTEM_DIR` patch.

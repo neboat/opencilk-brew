@@ -1,9 +1,9 @@
 class OpencilkLld < Formula
   desc "LLVM Project Linker with OpenCilk modifications"
   homepage "https://lld.llvm.org/"
-  url "https://github.com/OpenCilk/opencilk-project/archive/refs/heads/release/19.x.zip"
+  url "https://github.com/OpenCilk/opencilk-project/archive/refs/tags/opencilk/v3.0.zip"
   version "19.1.7"
-  sha256 "99f3156c1c64f21788e7836bcb2b7a81dc7ec4e9601c219109f785994d440124"
+  sha256 "4a2c5e98040c963f0a5bc55a1e113d60d28fc824945c512f643ad6b08889a3da"
   # The LLVM Project is under the Apache License v2.0 with LLVM Exceptions
   license all_of: [
     "MIT",
@@ -14,16 +14,6 @@ class OpencilkLld < Formula
   livecheck do
     formula "opencilk"
   end
-
-  # bottle do
-  #   sha256 cellar: :any,                 arm64_sequoia: "142f5ef84388b4e9861c135d0396aee790c5b9029cff3186af16447203125ac0"
-  #   sha256 cellar: :any,                 arm64_sonoma:  "a97e6948e373cbab2608ef720610214c979ed57d78e266e9c9a2061189adff38"
-  #   sha256 cellar: :any,                 arm64_ventura: "4e6d3be69b3a5aed4b689667c5bebab024f6437e9d45529ded2b0ac34e7cd59a"
-  #   sha256 cellar: :any,                 sonoma:        "a7ecea226cc1e7a853e07279250d8d07a782a9beadc8768ef19abda5a0bdcf28"
-  #   sha256 cellar: :any,                 ventura:       "645a2c3e53203c29473f855416032f6f0aa358e2afccfe97591f5522e3a621d4"
-  #   sha256 cellar: :any_skip_relocation, arm64_linux:   "23c8206ff14c20f0751e7d98995b406898e907d5c30be197fc254ae802cebf19"
-  #   sha256 cellar: :any_skip_relocation, x86_64_linux:  "f56a5d30dc5903c1983ddbb56adb0f2536db027ff6cb7ccc89dddd357d705042"
-  # end
 
   depends_on "cmake" => :build
   depends_on "opencilk"
