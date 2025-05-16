@@ -396,8 +396,8 @@ class Opencilk < Formula
       CLANG_CONFIG_FILE_SYSTEM_DIR: #{clang_config_file_dir}
       CLANG_CONFIG_FILE_USER_DIR:   ~/.config/clang
 
-      LLD is now provided in a separate formula:
-        brew install lld@19
+      OpenCilk LLD is provided in a separate formula:
+        brew install opencilk-lld
     EOS
 
     on_macos do
