@@ -316,6 +316,7 @@ class Opencilk < Formula
         -DLLVM_CMAKE_DIR=#{lib}
         -DCHEETAH_OUTPUT_DIR=#{buildpath}/lib/clang/#{soversion}
         -DCHEETAH_INSTALL_PATH=#{lib}/clang/#{soversion}
+        -DLLVM_ROOT=#{bin}/..
       ]
 
       mkdir "build" do
@@ -336,6 +337,7 @@ class Opencilk < Formula
         -DLLVM_CMAKE_DIR=#{lib}
         -DCILKTOOLS_OUTPUT_DIR=#{buildpath}/lib/clang/#{soversion}
         -DCILKTOOLS_INSTALL_PATH=#{lib}/clang/#{soversion}
+        -DLLVM_ROOT=#{bin}/..
       ]
 
       mkdir "build" do
