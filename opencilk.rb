@@ -1,15 +1,14 @@
 class Opencilk < Formula
   desc "Task-parallel programming platform"
   homepage "https://www.opencilk.org/"
-  url "https://github.com/OpenCilk/opencilk-project/archive/refs/tags/opencilk/v3.0.zip"
+  url "https://github.com/OpenCilk/opencilk-project/archive/refs/tags/opencilk/v3.0.tar.gz"
   version "19.1.7"
-  sha256 "4a2c5e98040c963f0a5bc55a1e113d60d28fc824945c512f643ad6b08889a3da"
+  sha256 "0e23756c05c97596009f6a2d8d1625ed34fe556a44067413089d4ca321a0c4d7"
   # The OpenCilk Project is under the MIT License and the Apache License v2.0 with LLVM Exceptions
   license all_of: [
     "MIT",
     "Apache-2.0" => { with: "LLVM-exception" },
   ]
-  head "https://github.com/OpenCilk/opencilk-project.git", branch: "release/19.x"
 
   # Clang cannot find system headers if Xcode CLT is not installed
   pour_bottle? only_if: :clt_installed
@@ -38,13 +37,13 @@ class Opencilk < Formula
 
   # [OpenCilk] Add cheetah and cilktools as additional dependencies
   resource "cheetah" do
-    url "https://github.com/OpenCilk/cheetah/archive/refs/tags/opencilk/v3.0.zip"
-    sha256 "960053cf82a6d9c732a48384e86f3ddad94fea26e96a665cc88b2e0677c6eeb0"
+    url "https://github.com/OpenCilk/cheetah/archive/refs/tags/opencilk/v3.0.tar.gz"
+    sha256 "cd298ee31c1472e8fc1e18223e7923dee2d5678cb773d3df0a6457dd2ed26816"
   end
 
   resource "cilktools" do
-    url "https://github.com/OpenCilk/productivity-tools/archive/refs/tags/opencilk/v3.0.zip"
-    sha256 "7522d450fd04cb8c4f1077eec20be9cd5f7d95845dac297eea113f8d93aad7a8"
+    url "https://github.com/OpenCilk/productivity-tools/archive/refs/tags/opencilk/v3.0.tar.gz"
+    sha256 "52b439122e8c9c37fee654b7dd3ed3eb1ece56aafad8f4e6b5af6fe2291ffbfc"
   end
 
   # Backport relative `CLANG_CONFIG_FILE_SYSTEM_DIR` patch.

@@ -1,15 +1,14 @@
 class OpencilkLld < Formula
   desc "LLVM Project Linker with OpenCilk modifications"
   homepage "https://lld.llvm.org/"
-  url "https://github.com/OpenCilk/opencilk-project/archive/refs/tags/opencilk/v3.0.zip"
+  url "https://github.com/OpenCilk/opencilk-project/archive/refs/tags/opencilk/v3.0.tar.gz"
   version "19.1.7"
-  sha256 "4a2c5e98040c963f0a5bc55a1e113d60d28fc824945c512f643ad6b08889a3da"
+  sha256 "0e23756c05c97596009f6a2d8d1625ed34fe556a44067413089d4ca321a0c4d7"
   # The LLVM Project is under the Apache License v2.0 with LLVM Exceptions
   license all_of: [
     "MIT",
     "Apache-2.0" => { with: "LLVM-exception" },
   ]
-  head "https://github.com/OpenCilk/opencilk-project.git", branch: "release/19.x"
 
   livecheck do
     formula "opencilk"
