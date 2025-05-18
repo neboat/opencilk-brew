@@ -10,6 +10,8 @@ class Opencilk < Formula
     "Apache-2.0" => { with: "LLVM-exception" },
   ]
 
+  # This formula is based heavily on the llvm@19 formula.
+
   # Clang cannot find system headers if Xcode CLT is not installed
   pour_bottle? only_if: :clt_installed
 
@@ -95,25 +97,14 @@ class Opencilk < Formula
       pstl
     ]
 
-    # unless versioned_formula?
-    #   projects << "lldb"
-
-    #   if OS.mac?
-    #     runtimes << "openmp"
-    #   else
-    #     projects << "openmp"
-    #   end
-    # end
-
     python_versions = Formula.names
                              .select { |name| name.start_with? "python@" }
                              .map { |py| py.delete_prefix("python@") }
-    # site_packages = Language::Python.site_packages(python3).delete_prefix("lib/")
 
-    # # Work around build failure (maybe from CMake 4 update) by using environment
-    # # variable for https://cmake.org/cmake/help/latest/variable/CMAKE_OSX_SYSROOT.html
-    # # TODO: Consider if this should be handled in superenv as impacts other formulae
-    # ENV["SDKROOT"] = MacOS.sdk_for_formula(self).path if OS.mac? && MacOS.sdk_root_needed?
+    # Work around build failure (maybe from CMake 4 update) by using environment
+    # variable for https://cmake.org/cmake/help/latest/variable/CMAKE_OSX_SYSROOT.html
+    # TODO: Consider if this should be handled in superenv as impacts other formulae
+    ENV["SDKROOT"] = MacOS.sdk_for_formula(self).path if OS.mac? && MacOS.sdk_root_needed?
 
     # Apple's libstdc++ is too old to build LLVM
     ENV.libcxx if ENV.compiler == :clang
@@ -645,29 +636,6 @@ class Opencilk < Formula
         cindex.Config().get_cindex_library()
       PYTHON
     end
-
-    # unless versioned_formula?
-    #   # Test static analyzer
-    #   (testpath/"unreachable.c").write <<~EOS
-    #     unsigned int func(unsigned int a) {
-    #       unsigned int *z = 0;
-    #       if ((a & 1) && ((a & 1) ^1))
-    #         return *z; // unreachable
-    #       return 0;
-    #     }
-    #   EOS
-    #   system bin/"clang", "--analyze", "-Xanalyzer", "-analyzer-constraints=z3", "unreachable.c"
-
-    #   # Check that lldb can use Python
-    #   lldb_script_interpreter_info = JSON.parse(shell_output("#{bin}/lldb --print-script-interpreter-info"))
-    #   assert_equal "python", lldb_script_interpreter_info["language"]
-    #   python_test_cmd = "import pathlib, sys; print(pathlib.Path(sys.prefix).resolve())"
-    #   assert_match shell_output("#{python3} -c '#{python_test_cmd}'"),
-    #                pipe_output("#{bin}/lldb", <<~EOS)
-    #                  script
-    #                  #{python_test_cmd}
-    #                EOS
-    # end
 
     # Ensure LLVM did not regress output of `llvm-config --system-libs` which for a time
     # was known to output incorrect linker flags; e.g., `-llibxml2.tbd` instead of `-lxml2`.

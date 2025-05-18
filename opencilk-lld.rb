@@ -10,6 +10,8 @@ class OpencilkLld < Formula
     "Apache-2.0" => { with: "LLVM-exception" },
   ]
 
+  # This formula is based heavily on the lld formula.
+
   livecheck do
     formula "opencilk"
   end
