@@ -13,7 +13,7 @@ class Opencilk < Formula
   # Clang cannot find system headers if Xcode CLT is not installed
   pour_bottle? only_if: :clt_installed
 
-  keg_only :provided_by_macos
+  keg_only :shadowed_by_macos, "macOS provides clang"
 
   # https://llvm.org/docs/GettingStarted.html#requirement
   depends_on "cmake" => :build
