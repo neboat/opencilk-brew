@@ -84,15 +84,9 @@ class Opencilk < Formula
     projects = %w[
       clang
       clang-tools-extra
-      mlir
-      polly
     ]
     runtimes = %w[
       compiler-rt
-      libcxx
-      libcxxabi
-      libunwind
-      pstl
     ]
 
     python_versions = Formula.names
