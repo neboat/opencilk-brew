@@ -2,7 +2,6 @@ class Opencilk < Formula
   desc "Task-parallel programming platform"
   homepage "https://www.opencilk.org/"
   url "https://github.com/OpenCilk/opencilk-project/archive/refs/tags/opencilk/v3.0.tar.gz"
-  version "19.1.7"
   sha256 "0e23756c05c97596009f6a2d8d1625ed34fe556a44067413089d4ca321a0c4d7"
   # The OpenCilk Project is under the MIT License and the Apache License v2.0 with LLVM Exceptions
   license all_of: [
@@ -15,7 +14,7 @@ class Opencilk < Formula
   # Clang cannot find system headers if Xcode CLT is not installed
   pour_bottle? only_if: :clt_installed
 
-  keg_only :shadowed_by_macos, "macOS provides clang"
+  keg_only "it can shadow clang binaries and llvm libraries"
 
   # https://llvm.org/docs/GettingStarted.html#requirement
   depends_on "cmake" => :build
@@ -23,7 +22,6 @@ class Opencilk < Formula
   depends_on "python@3.13" => [:build, :test]
   depends_on "swig" => :build
   depends_on "xz"
-  depends_on "z3"
   depends_on "zstd"
 
   uses_from_macos "libedit"
@@ -32,7 +30,7 @@ class Opencilk < Formula
   uses_from_macos "zlib"
 
   on_linux do
-    depends_on "pkg-config" => :build
+    depends_on "pkgconf" => :build
     depends_on "binutils" # needed for gold
     depends_on "elfutils" # openmp requires <gelf.h>
   end
@@ -131,7 +129,7 @@ class Opencilk < Formula
       -DLLVM_INCLUDE_DOCS=OFF
       -DLLVM_INCLUDE_TESTS=OFF
       -DLLVM_INSTALL_UTILS=ON
-      -DLLVM_ENABLE_Z3_SOLVER=#{versioned_formula? ? "OFF" : "ON"}
+      -DLLVM_ENABLE_Z3_SOLVER=OFF
       -DLLVM_OPTIMIZED_TABLEGEN=ON
       -DLLVM_TARGETS_TO_BUILD=all
       -DLLVM_USE_RELATIVE_PATHS_IN_FILES=ON
@@ -177,7 +175,6 @@ class Opencilk < Formula
       args << "-DLIBCXX_INSTALL_LIBRARY_DIR=#{libcxx_install_libdir}"
       args << "-DLIBUNWIND_INSTALL_LIBRARY_DIR=#{libunwind_install_libdir}"
       args << "-DLIBCXXABI_INSTALL_LIBRARY_DIR=#{libcxx_install_libdir}"
-      args << "-DDEFAULT_SYSROOT=#{macos_sdk}" if macos_sdk
       runtimes_cmake_args << "-DCMAKE_INSTALL_RPATH=#{libcxx_rpaths.join("|")}"
 
       # Disable builds for OSes not supported by the CLT SDK.
@@ -223,19 +220,14 @@ class Opencilk < Formula
       builtins_cmake_args << "-DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON"
     end
 
-    # # Skip the PGO build on HEAD installs, non-bottle source builds, or versioned formulae.
-    # # Catalina and earlier requires too many hacks to build with PGO.
-    # pgo_build = build.stable? && build.bottle? && OS.mac? && (MacOS.version > :catalina) && !versioned_formula?
-    # lto_build = pgo_build && OS.mac?
-
     if ENV.cflags.present?
-      args << "-DCMAKE_C_FLAGS=#{ENV.cflags}" unless pgo_build
+      args << "-DCMAKE_C_FLAGS=#{ENV.cflags}"
       runtimes_cmake_args << "-DCMAKE_C_FLAGS=#{ENV.cflags}"
       builtins_cmake_args << "-DCMAKE_C_FLAGS=#{ENV.cflags}"
     end
 
     if ENV.cxxflags.present?
-      args << "-DCMAKE_CXX_FLAGS=#{ENV.cxxflags}" unless pgo_build
+      args << "-DCMAKE_CXX_FLAGS=#{ENV.cxxflags}"
       runtimes_cmake_args << "-DCMAKE_CXX_FLAGS=#{ENV.cxxflags}"
       builtins_cmake_args << "-DCMAKE_CXX_FLAGS=#{ENV.cxxflags}"
     end
@@ -428,8 +420,6 @@ class Opencilk < Formula
       soversion << "git"
     elsif (match = llvm_version.match(/-rc\d*$/))
       soversion << match[0]
-    else
-      assert_equal version, llvm_version
     end
 
     assert_equal prefix.to_s, shell_output("#{bin}/llvm-config --prefix").chomp
@@ -473,6 +463,7 @@ class Opencilk < Formula
         toolchain_path = "/Library/Developer/CommandLineTools"
         cpp_base = (MacOS.version >= :big_sur) ? MacOS::CLT.sdk_path : toolchain_path
         system bin/"clang++", "-v",
+               "--no-default-config",
                "-isysroot", MacOS::CLT.sdk_path,
                "-isystem", "#{cpp_base}/usr/include/c++/v1",
                "-isystem", "#{MacOS::CLT.sdk_path}/usr/include",
@@ -510,6 +501,7 @@ class Opencilk < Formula
       if OS.mac? && MacOS::Xcode.installed?
         cpp_base = (MacOS::Xcode.version >= "12.5") ? MacOS::Xcode.sdk_path : MacOS::Xcode.toolchain_path
         system bin/"clang++", "-v",
+               "--no-default-config",
                "-isysroot", MacOS::Xcode.sdk_path,
                "-isystem", "#{cpp_base}/usr/include/c++/v1",
                "-isystem", "#{MacOS::Xcode.sdk_path}/usr/include",
