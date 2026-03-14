@@ -327,12 +327,10 @@ class Opencilk < Formula
     arches = Set.new([:arm64, :x86_64, :aarch64])
     arches << arch
 
-    sysroot = if macos_version.blank? || (MacOS.version > macos_version && MacOS::CLT.separate_header_package?)
+    sysroot = if macos_version.blank? || MacOS.version > macos_version
       "#{MacOS::CLT::PKG_PATH}/SDKs/MacOSX.sdk"
-    elsif macos_version >= "10.14"
-      "#{MacOS::CLT::PKG_PATH}/SDKs/MacOSX#{macos_version}.sdk"
     else
-      "/"
+      "#{MacOS::CLT::PKG_PATH}/SDKs/MacOSX#{macos_version}.sdk"
     end
 
     # TODO: Add path to opencilk resource dir to the clang config files.
